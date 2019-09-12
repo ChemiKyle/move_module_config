@@ -5,7 +5,6 @@ require_once APP_PATH_DOCROOT . 'ControlCenter/header.php';
 
 $title = REDCap::escapeHtml('Copy modules page');
 echo RCView::h4([], $title);
-echo 'Hello World!';
 
 $E = new \EMCC\ExternalModule\ExternalModule();
 
@@ -50,28 +49,40 @@ foreach($module_mapping as $prefix => $id) {
 
 ?>
 
-<select id="external-modules">
-    <option value="" disabled selected hidden>Please select an external module...</option>
-<?php
-foreach($module_mapping as $prefix => $key) {
-    echo "<option value='$key' prefix='$prefix'>" . \ExternalModules\ExternalModules::getConfig($prefix)['name'] . "</option>";
-}
-?>
-</select>
+<div class="selection-menus">
+    <label for="external-modules">External Modules:</label>
+    <select id="external-modules">
+        <option value="" disabled selected hidden>Please select an external module...</option>
+    <?php
+    foreach($module_mapping as $prefix => $key) {
+        echo "<option value='$key' prefix='$prefix'>" . \ExternalModules\ExternalModules::getConfig($prefix)['name'] . "</option>";
+    }
+    ?>
+    </select>
 
-<select id="source-projects">
-    <option value="" disabled selected hidden>Choose a module first.</option>
-</select>
+    <div id="source-project-div">
+        <label for="source-projects">Source Project:</label>
+        <select id="source-projects">
+            <option value="" disabled selected hidden>Choose a module first.</option>
+        </select>
+        <button id="download-settings">Download Settings</button>
+        <button id="dump-text">Dump Settings as Text</button>
+    </div>
 
-</br>
+    </br>
+    <div id="target-project-div">
+        <label for="target-projects">Target Project:</label>
+        <select id="target-projects">
+            <option value="" disabled selected hidden>Choose a module first.</option>
+        </select>
+        <button id="transfer-config">Transfer Configuration Internally</button>
+        <button id="transfer-config">Upload Configuration JSON File</button>
+    </div>
+</div>
 
-<select id="target-projects">
-    <option value="" disabled selected hidden>Choose a source project first.</option>
-</select>
 
-or
-
-<button>Download settings</button>
+<pre id="text-dump-area">
+</pre>
 
 <script>
 var ajax_page = "<?php echo $ajax_page; ?>";
