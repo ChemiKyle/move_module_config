@@ -2,6 +2,7 @@
 
 namespace EMCC\ExternalModule;
 
+use ExternalModules;
 use ExternalModules\AbstractExternalModule;
 use REDCap;
 
@@ -10,7 +11,7 @@ class ExternalModule extends AbstractExternalModule {
     function collectModules() {
         // fetch module id to name mappings
         $sql = "SELECT * FROM redcap_external_modules;";
-        $result = $this->query($sql);
+        $result = $this->framework->query($sql);
         $module_mapping = [];
 
         while ($row = db_fetch_assoc($result)) {
@@ -20,11 +21,11 @@ class ExternalModule extends AbstractExternalModule {
     }
 
     function collectModuleSettings($external_module_id = NULL, $project_id = NULL) {
-        $sql = "SELECT * FROM redcap_external_module_settings";
-        $sql .= ($external_module_id) ? " WHERE external_module_id = '" . $external_module_id . "'" : "";
-        $sql .= ($project_id) ? " AND project_id = '" . $project_id . "'" : "";
-        $sql .= ";"; 
-        $result = $this->query($sql);
+        $sql = "SELECT * FROM redcap_external_module_settings
+        " . (($external_module_id) ? " WHERE external_module_id = '" . $external_module_id . "'" : "") . "
+        " . (($project_id) ? " AND project_id = '" . $project_id . "'" : "") . ";";
+
+        $result = $this->framework->query($sql);
         $module_settings = [];
 
         while ($row = db_fetch_assoc($result)) {
@@ -32,4 +33,10 @@ class ExternalModule extends AbstractExternalModule {
         }
         return $module_settings;
     }
+
+    function getEnabledModules($prefix) {
+        \ExternalModules\ExternalModules::getConfig($prefix);
+        return "not implemented";
+        }
+
 }

@@ -2,6 +2,7 @@
     "name": "External Module Config Copier",
     "description": "Metamodule to clone external module settings between projects and REDCap instances",
     "namespace": "EMCC\\ExternalModule",
+    "framework-version": 3,
     "permissions": [
     ],
     "authors": [
