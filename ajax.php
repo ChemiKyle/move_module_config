@@ -23,14 +23,14 @@ if (!$target_project_id) {
 } else {
     $source_config = \ExternalModules\ExternalModules::getProjectSettingsAsArray($ext_prefix, $source_project_id);
     foreach($source_config as $key =>$value) {
-        \ExternalModules\ExternalModules::setProjectSetting($ext_prefix, $target_project_id, $key, $value);
+        if (array_key_exists('system_value', $value)) {
+            // skip system level values
+            continue;
+        }
+        //TODO: check valid keys for values that are keys for lookup tables
+        // e.g. FRSL stores event ID as opposed to name, making a transfer useless
+        // $value =  (keyValueIsLookupPK($key)) ? mapToTarget($key, $value['value'], [$mapping_scheme]) : $value['value'];
+        \ExternalModules\ExternalModules::setProjectSetting($ext_prefix, $target_project_id, $key, $value['value']);
     }
-    echo "attempting to overwrite module settings!";
 }
-
-//echo json_encode( \ExternalModules\ExternalModules::getProjectSettingsAsArray('form_render_skip_logic', '15') );
-
-
 ?>
-
-
