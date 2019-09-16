@@ -47,7 +47,7 @@ if (!$target_project_id) {
         $sql = \EMCC\ExternalModule\ExternalModule::mapSourceEventIdToTarget($source_project_id, $target_project_id);
     } else {
         // import a JSON file
-        //$source_config = \ExternalModules\ExternalModules::getProjectSettingsAsArray($ext_prefix, $target_project_id);
+        //$check_source_config = \ExternalModules\ExternalModules::getProjectSettingsAsArray($ext_prefix, $target_project_id);
         $source_config = $json_string;
         $sql = \EMCC\ExternalModule\ExternalModule::mapEventNamesToIds($target_project_id);
     }
@@ -74,7 +74,8 @@ function convertEventFields($ext_prefix, $source_config, $event_fields, $source_
         if (in_array($key, $event_fields)) {
             // replace event source value with target equivalent
             foreach($source_to_target as $source_event => $target_event) {
-                $value['value'] = str_replace($source_event, $target_event, $value['value']);
+                // json encode and decode to flatten nested arrays during replacement
+                $value['value'] = json_decode( str_replace("\"$source_event\"", "\"$target_event\"", json_encode($value['value'])) );
             }
         }
         if (!$use_file) {
