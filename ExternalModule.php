@@ -37,6 +37,33 @@ class ExternalModule extends AbstractExternalModule {
     function getEnabledModules($prefix) {
         \ExternalModules\ExternalModules::getConfig($prefix);
         return "not implemented";
-        }
+    }
 
+    public static function mapSourceEventIdToTarget($source_event_id, $target_event_id) {
+        $sql = "SELECT A.event_id, B.event_id
+            FROM redcap_events_metadata AS A
+                INNER JOIN redcap_events_arms AS EAA ON (A.arm_id = EAA.arm_id)
+                INNER JOIN redcap_events_metadata AS B ON (A.descrip = B.descrip)
+                INNER JOIN redcap_events_arms AS EAB ON (B.arm_id = EAB.arm_id)
+                WHERE
+                    EAB.project_id = $target_event_id
+                    AND
+                    EAA.project_id = $source_event_id;";
+        return ($sql);
+    }
+
+    public static function mapEventIdsToNames($project_id) {
+        $sql = "SELECT A.event_id, A.descrip FROM redcap_events_metadata as A
+                    INNER JOIN redcap_events_arms as B ON (A.arm_id = B.arm_id)
+                    WHERE B.project_id = $project_id
+                    ;";
+        return($sql);
+    }
+
+    public static function mapEventNamesToIds($event_names, $target_project_id) {
+        $sql = "SELECT descrip, event_id FROM redcap_events_metadata
+                    WHERE descrip IN ('" . implode("', '", $event_names) . "')
+                    AND project_id = $target_project_id;";
+        return($sql);
+    }
 }

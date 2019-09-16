@@ -23,17 +23,18 @@ $(function() {
         selectedTargetProjectId = $(this).children('option:selected')[0].getAttribute('value');
         });
 
-    function makeAjaxCall(prefix = null, sourceProjectId = null, targetProjectId = null, transfer = null, eventFields = null) {
+    function makeAjaxCall(prefix = null, sourceProjectId = null, targetProjectId = null, transfer = null, eventFields = null, useFile = null) {
         $.get(ajax_page,
                 {
                     ext_prefix: prefix,
                     source_project_id: sourceProjectId,
                     target_project_id: targetProjectId,
                     transfer: transfer,
-                    event_fields: eventFields
+                    event_fields: eventFields,
+                    use_file: useFile
                 },
                 function(data) {
-                    if (!transfer) {
+                    if (!transfer && !useFile) {
                         if (prefix && !sourceProjectId) {
                             const responseData = JSON.parse(data);
                             sourceProjectOptions = [];
@@ -87,21 +88,54 @@ $(function() {
                 alert("You must select a module and a project.");
                 return;
             }
-            $('#text-dump-area').text(JSON.stringify(moduleConfig));
+            let eventFields = reportModuleEventFields(selectedModuleConfigSchema);
+            let response;
+            $.get(ajax_page,
+                    {
+                        ext_prefix: selectedModulePrefix,
+                        source_project_id: selectedSourceProjectId,
+                        transfer: false,
+                        event_fields: eventFields,
+                        use_file: true
+                    },
+                    function(data) {
+                            response = JSON.parse(data);
+                            $('#text-dump-area').text(JSON.stringify(response, null, 2));
+                        }
+                    );
             });
 
     $('#download-settings').click(function() {
+            const eventFields = reportModuleEventFields(selectedModuleConfigSchema);
+            let response;
+
+            // cannot be wrapped in a function thanks to async
+            $.get(ajax_page,
+                    {
+                        ext_prefix: selectedModulePrefix,
+                        source_project_id: selectedSourceProjectId,
+                        transfer: false,
+                        event_fields: eventFields,
+                        use_file: true
+                    },
+                    function(data) {
+                            dlFile(data);
+                        }
+                    );
+
+            function dlFile(fileData) {
             // encode module's configuration as raw text data tied to a link
             // see https://stackoverflow.com/questions/3665115/how-to-create-a-file-in-memory-for-user-to-download-but-not-through-server
             // for more options
-            const filename = `${selectedModulePrefix}_${selectedSourceProjectId}.json`;
-            let element = document.createElement('a');
-            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(moduleConfig)));
-            element.setAttribute('download', filename);
-            element.style.display = 'none';
-            document.body.appendChild(element);
-            element.click();
-            document.body.removeChild(element);
+                const filename = `${selectedModulePrefix}_${selectedSourceProjectId}.json`;
+                let element = document.createElement('a');
+                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(fileData));
+                element.setAttribute('download', filename);
+                element.style.display = 'none';
+                document.body.appendChild(element);
+                element.click();
+                document.body.removeChild(element);
+            }
     });
 
     //TODO
