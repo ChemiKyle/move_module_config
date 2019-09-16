@@ -140,10 +140,11 @@ $(function() {
 
     //TODO
     $('#upload-settings').click(function() {
-        //const file = uploadFile();
-        //applyFile(file, targetProjectId);
+        let element = $("#fileUpload");
+        element.click();
         return;
     });
+
 
     function reportModuleEventFields(moduleConfigSchema) {
         // find fields which map to events so the event_ids may be changed to match the target project
@@ -180,5 +181,28 @@ $(function() {
         $projectDropdown.append(projectOptions);
     }
 
+    $('#fileUpload').change(function() { handleFiles(this.files); });
+    function handleFiles(files) {
+        const eventFields = reportModuleEventFields(selectedModuleConfigSchema);
+        let fr = new FileReader();
+
+        fr.onload = function(e) {
+            let result = e.target.result;
+            $.get(ajax_page,
+                    {
+                        ext_prefix: selectedModulePrefix,
+                        json_string: JSON.parse(result),
+                        transfer: true,
+                        use_file: true,
+                        event_fields: eventFields,
+                        target_project_id: selectedTargetProjectId
+                    },
+                    function(data) {
+                        console.log(data);
+                    });
+        }
+
+        fr.readAsText(files[0]);
+    }
 });
 

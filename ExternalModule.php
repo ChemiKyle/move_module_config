@@ -60,10 +60,11 @@ class ExternalModule extends AbstractExternalModule {
         return($sql);
     }
 
-    public static function mapEventNamesToIds($event_names, $target_project_id) {
-        $sql = "SELECT descrip, event_id FROM redcap_events_metadata
-                    WHERE descrip IN ('" . implode("', '", $event_names) . "')
-                    AND project_id = $target_project_id;";
+    public static function mapEventNamesToIds($project_id) {
+        $sql = "SELECT A.descrip, A.event_id FROM redcap_events_metadata as A
+                    INNER JOIN redcap_events_arms as B ON (A.arm_id = B.arm_id)
+                    WHERE B.project_id = $project_id
+                    ;";
         return($sql);
     }
 }

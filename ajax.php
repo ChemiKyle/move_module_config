@@ -10,6 +10,7 @@ $target_project_id = $_GET['target_project_id'];
 $transfer = $_GET['transfer'];
 $use_file = $_GET['use_file'];
 $event_fields = $_GET['event_fields'];
+$json_string = $_GET['json_string'];
 
 if (!$target_project_id) {
     if ($ext_prefix) {
@@ -32,7 +33,7 @@ if (!$target_project_id) {
                 while ($row = $response->fetch_row()) {
                     $source_to_target[$row[0]] = $row[1];
                 }
-                convertEventFields($source_config, $event_fields, $source_to_target, $use_file);
+                convertEventFields($ext_prefix, $source_config, $event_fields, $source_to_target, $use_file);
             }
         }
     } else {
@@ -40,14 +41,15 @@ if (!$target_project_id) {
     }
 } else if ($target_project_id && $transfer) {
     $source_to_target = [];
-    if ($source_project_id !== '') {
+    if ($source_project_id){
         // internal transfer
         $source_config = \ExternalModules\ExternalModules::getProjectSettingsAsArray($ext_prefix, $source_project_id);
         $sql = \EMCC\ExternalModule\ExternalModule::mapSourceEventIdToTarget($source_project_id, $target_project_id);
     } else {
         // import a JSON file
-        $source_config = \ExternalModules\ExternalModules::getProjectSettingsAsArray($ext_prefix, $target_project_id);
-        $sql = \EMCC\ExternalModule\ExternalModule::mapEventNamesToIds($event_fields, $target_project_id);
+        //$source_config = \ExternalModules\ExternalModules::getProjectSettingsAsArray($ext_prefix, $target_project_id);
+        $source_config = $json_string;
+        $sql = \EMCC\ExternalModule\ExternalModule::mapEventNamesToIds($target_project_id);
     }
     if ($event_fields !== "") {
         $response = \ExternalModules\ExternalModules::query($sql);
@@ -56,10 +58,11 @@ if (!$target_project_id) {
             $source_to_target[$row[0]] = $row[1];
         }
     }
-    convertEventFields($source_config, $event_fields, $source_to_target, $use_file);
-    }
+    convertEventFields($ext_prefix, $source_config, $event_fields, $source_to_target, $use_file = FALSE, $target_project_id);
+}
 
-function convertEventFields($source_config, $event_fields, $source_to_target, $use_file) {
+
+function convertEventFields($ext_prefix, $source_config, $event_fields, $source_to_target, $use_file = FALSE, $target_project_id = NULL) {
     foreach($source_config as $key => &$value) {
         if (array_key_exists('system_value', $value)) {
             // skip system level values
@@ -75,7 +78,7 @@ function convertEventFields($source_config, $event_fields, $source_to_target, $u
             }
         }
         if (!$use_file) {
-            //\ExternalModules\ExternalModules::setProjectSetting($ext_prefix, $target_project_id, $key, $value);
+            \ExternalModules\ExternalModules::setProjectSetting($ext_prefix, $target_project_id, $key, $value['value']);
         }
     }
 

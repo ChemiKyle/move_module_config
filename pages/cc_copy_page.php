@@ -39,7 +39,7 @@ foreach($module_mapping as $prefix => $id) {
     print_r($prefix);
     print_r("<pre>");
     print_r("\nprefix: $prefix   ; id: $id   \n");
-    print_r(\ExternalModules\ExternalModules::getConfig($prefix)['name']);
+    print_r(\ExternalModules\ExternalModules::getConfig($prefix));
     var_dump(\ExternalModules\ExternalModules::getSystemSettingsAsArray($prefix));
     print_r("\n\nProjects:\n");
     var_dump(\ExternalModules\ExternalModules::getEnabledProjects($prefix)->fetch_all(MYSQLI_ASSOC));
@@ -76,7 +76,8 @@ foreach($module_mapping as $prefix => $id) {
             <option value="" disabled selected hidden>Choose a module first.</option>
         </select>
         <button id="transfer-config">Transfer Configuration Internally</button>
-        <button id="transfer-config">Upload Configuration JSON File</button>
+        <input id="fileUpload" type="file" style="display:none" >
+        <button id="upload-settings">Upload Configuration JSON File</button>
     </div>
 </div>
 
