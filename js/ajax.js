@@ -46,7 +46,6 @@ $(function() {
                             selectedModuleConfigSchema = responseData.moduleConfigSchema;
                         }
                         else if (prefix && sourceProjectId) {
-                            //console.log(data);
                             var targetProjectOptions = $sourceProjectsDropdown
                                 .clone()
                                 .find('option')
@@ -187,11 +186,11 @@ $(function() {
         let fr = new FileReader();
 
         fr.onload = function(e) {
-            let result = e.target.result;
+            let configData = e.target.result;
             $.get(ajax_page,
                     {
                         ext_prefix: selectedModulePrefix,
-                        json_string: JSON.parse(result),
+                        json_string: JSON.parse(configData),
                         transfer: true,
                         use_file: true,
                         event_fields: eventFields,

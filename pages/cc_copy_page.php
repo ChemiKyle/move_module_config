@@ -1,27 +1,14 @@
 <?php
 
-require_once dirname(__DIR__) . '/ExternalModule.php';
 require_once APP_PATH_DOCROOT . 'ControlCenter/header.php';
 
 $title = REDCap::escapeHtml('Copy modules page');
 echo RCView::h4([], $title);
 
-$E = new \EMCC\ExternalModule\ExternalModule();
+$module_mapping = $module->collectModules();
 
-$module_mapping = $E->collectModules();
-$module_settings = $E->collectModuleSettings();
-
-//\EMCC\ExternalModule\ExternalModule::collectModules();
-/*
-print_r("<pre>");
-print_r("Module mappings:\n");
-var_dump($module_mapping);
-print_r("Module settigns:\n");
-var_dump($module_settings);
-print_r("</pre>");
-*/
-$ajax_page = $E->framework->getUrl('ajax.php');
-$ajax_script = $E->framework->getUrl('js/ajax.js');
+$ajax_page = $module->framework->getUrl('ajax.php');
+$ajax_script = $module->framework->getUrl('js/ajax.js');
 
 
 /*
@@ -49,6 +36,7 @@ foreach($module_mapping as $prefix => $id) {
 
 ?>
 
+<!-- TODO: CSS -->
 <div class="selection-menus">
     <label for="external-modules">External Modules:</label>
     <select id="external-modules">
@@ -88,18 +76,6 @@ foreach($module_mapping as $prefix => $id) {
 <script>
 var ajax_page = "<?php echo $ajax_page; ?>";
 </script>
-
-<?
-//export as JSON; placeholders for Module_id and for Project_id
-//load in JSON
-
-/*
-
-\ExternalModules\ExternalModules::setProjectSetting($prefix, $pid, $key, $value);
-
-*/
-
-?>
 
 <!-- TODO: tables here -->
 

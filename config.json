@@ -2,13 +2,14 @@
     "name": "External Module Config Copier",
     "description": "Metamodule to clone external module settings between projects and REDCap instances",
     "namespace": "EMCC\\ExternalModule",
-    "framework-version": 3,
+    "framework-version": 5,
+    "redcap-version-min": "9.10.0",
     "permissions": [
     ],
     "authors": [
         {
-            "name": "Kyle Chesey",
-            "email": "kyle.chesney@ufl.edu",
+            "name": "University of Florida CTS-IT",
+            "email": "CTSIT-REDCAP-MODULE-SUPPO@LISTS.UFL.EDU",
             "institution": "University of Florida - CTSI"
         }
     ],
@@ -17,8 +18,8 @@
    "links": {
       "control-center": [
          {
-            "name": "cc copy page",
-            "icon": "bell",
+            "name": "Transfer External Module Configurations",
+            "icon": "far fa-copy",
             "url": "pages/cc_copy_page.php"
          }
       ],
