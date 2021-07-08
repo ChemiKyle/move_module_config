@@ -72,11 +72,10 @@ if (!$target_project_id) {
             $source_to_target[$row[0]] = $row[1];
         }
     }
-    $converted_config = convertEventFields($ext_prefix, $source_config, $event_fields, $source_to_target, $writing_config = $use_file, $target_project_id);
+
+    $converted_config = convertEventFields($ext_prefix, $source_config, $event_fields, $source_to_target, $writing_config = !$use_file, $target_project_id);
     if ($use_file) {
-        echo "unknown dump\n";
-        echo json_encode($converted_config);
-        //json_encode(\ExternalModules\ExternalModules::formatRawSettings($ext_prefix, $target_project_id, $converted_config));
+        echo json_encode(\ExternalModules\ExternalModules::formatRawSettings($ext_prefix, $target_project_id, $converted_config));
     }
 }
 

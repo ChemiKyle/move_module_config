@@ -38,7 +38,7 @@ $(function() {
         selectedTargetProjectId = $(this).children('option:selected')[0].getAttribute('value');
     });
 
-    function makeAjaxCall(prefix = null, sourceProjectId = null, targetProjectId = null, transfer = null, eventFields = null, useFile = null) {
+    function makeAjaxCall(prefix = null, sourceProjectId = null, targetProjectId = null, transfer = null, eventFields = null, useFile = false) {
         $.get(ajax_page,
                 {
                     ext_prefix: prefix,
@@ -72,6 +72,7 @@ $(function() {
                         }
                     }
                     else {
+                        // TODO: trigger a success or fail notification based on a response.
                         console.log(data);
                     }
 
