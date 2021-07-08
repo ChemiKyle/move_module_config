@@ -36,7 +36,6 @@ foreach($module_mapping as $prefix => $id) {
 
 ?>
 
-<!-- TODO: CSS -->
 <div class="selection-menus">
     <label for="external-modules">External Modules:</label>
     <select id="external-modules">
@@ -48,29 +47,34 @@ foreach($module_mapping as $prefix => $id) {
     ?>
     </select>
 
-    <div id="source-project-div">
+    </br>
+    </br>
+
+    <div id="source-project-div" style="display: none;">
         <label for="source-projects">Source Project:</label>
         <select id="source-projects">
             <option value="" disabled selected hidden>Choose a module first.</option>
         </select>
-        <button id="download-settings">Download Settings</button>
-        <button id="dump-text">Dump Settings as Text</button>
+        </br>
+        <button id="download-settings" type="button" class="btn btn-sm btn-success">Download Settings</button>
+        <button id="dump-text" type="button" class="btn btn-sm btn-primary">Dump Settings as Text</button>
     </div>
 
     </br>
-    <div id="target-project-div">
+    <div id="target-project-div" style="display: none;">
         <label for="target-projects">Target Project:</label>
         <select id="target-projects">
             <option value="" disabled selected hidden>Choose a module first.</option>
         </select>
-        <button id="transfer-config">Transfer Configuration Internally</button>
+        </br>
+        <button id="upload-settings" type="button" class="btn btn-sm btn-warning">Upload Configuration JSON File</button>
+        <button id="transfer-config" type="button" class="btn btn-sm btn-warning" style="display: none;">Transfer Configuration Internally</button>
         <input id="fileUpload" type="file" style="display:none" >
-        <button id="upload-settings">Upload Configuration JSON File</button>
     </div>
 </div>
 
 
-<pre id="text-dump-area">
+<pre id="text-dump-area" style="display: none;">
 </pre>
 
 <script>

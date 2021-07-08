@@ -7,21 +7,36 @@ $(function() {
     const $externalModulesDropdown = $('#external-modules');
     const $sourceProjectsDropdown = $('#source-projects');
     const $targetProjectsDropdown = $('#target-projects');
+    const REVEAL_TIME = 250;
     makeAjaxCall();
 
+    // TODO: consider using select2 ajax to populate, deprecate populateProjects
+    $externalModulesDropdown.select2();
+    $sourceProjectsDropdown.select2();
+    $targetProjectsDropdown.select2();
+
     $externalModulesDropdown.change(function() {
-            selectedModulePrefix = $(this).children('option:selected')[0].getAttribute('prefix');
-            makeAjaxCall(selectedModulePrefix);
-        });
+        selectedModulePrefix = $(this).children('option:selected')[0].getAttribute('prefix');
+        makeAjaxCall(selectedModulePrefix);
+        $sourceProjectsDropdown.parent().show(REVEAL_TIME);
+        $targetProjectsDropdown.parent().show(REVEAL_TIME);
+    });
 
     $sourceProjectsDropdown.change(function() {
         selectedSourceProjectId = $(this).children('option:selected')[0].getAttribute('value');
         makeAjaxCall(selectedModulePrefix, selectedSourceProjectId);
-        });
+        if (selectedTargetProjectId != undefined) {
+            $targetProjectsDropdown.siblings("#transfer-config").show(REVEAL_TIME);
+        }
+    });
 
     $targetProjectsDropdown.change(function() {
+        console.log(selectedSourceProjectId);
+        if (selectedSourceProjectId != undefined) {
+            $targetProjectsDropdown.siblings("#transfer-config").show(REVEAL_TIME);
+        }
         selectedTargetProjectId = $(this).children('option:selected')[0].getAttribute('value');
-        });
+    });
 
     function makeAjaxCall(prefix = null, sourceProjectId = null, targetProjectId = null, transfer = null, eventFields = null, useFile = null) {
         $.get(ajax_page,
@@ -83,26 +98,27 @@ $(function() {
         });
 
     $('#dump-text').click(function() {
-            if (!moduleConfig) {
-                alert("You must select a module and a project.");
-                return;
-            }
-            let eventFields = reportModuleEventFields(selectedModuleConfigSchema);
-            let response;
-            $.get(ajax_page,
-                    {
-                        ext_prefix: selectedModulePrefix,
-                        source_project_id: selectedSourceProjectId,
-                        transfer: false,
-                        event_fields: eventFields,
-                        use_file: true
-                    },
-                    function(data) {
-                            response = JSON.parse(data);
-                            $('#text-dump-area').text(JSON.stringify(response, null, 2));
-                        }
-                    );
-            });
+        if (!moduleConfig) {
+            alert("You must select a module and a project.");
+            return;
+        }
+        let eventFields = reportModuleEventFields(selectedModuleConfigSchema);
+        let response;
+        $.get(ajax_page,
+              {
+                  ext_prefix: selectedModulePrefix,
+                  source_project_id: selectedSourceProjectId,
+                  transfer: false,
+                  event_fields: eventFields,
+                  use_file: true
+              },
+              function(data) {
+                  response = JSON.parse(data);
+                  $('#text-dump-area').text(JSON.stringify(response, null, 2));
+                  $('#text-dump-area').show();
+              }
+             );
+    });
 
     $('#download-settings').click(function() {
             const eventFields = reportModuleEventFields(selectedModuleConfigSchema);
@@ -178,6 +194,8 @@ $(function() {
 
         $projectDropdown.append('<option value="" disabled selected hidden>Please select a project...</option>');
         $projectDropdown.append(projectOptions);
+        // reapply select2 as something in this function breaks it. Perhaps remove
+        $projectDropdown.select2();
     }
 
     $('#fileUpload').change(function() { handleFiles(this.files); });
@@ -204,4 +222,3 @@ $(function() {
         fr.readAsText(files[0]);
     }
 });
-
