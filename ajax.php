@@ -4,7 +4,7 @@ $source_project_id = ($_GET['source_project_id']) ?: $_GET['pid']; // fall back 
 $ext_prefix = $_GET['ext_prefix'];
 $target_project_id = $_GET['target_project_id'];
 $transfer = $_GET['transfer'];
-$use_file = $_GET['use_file'];
+$use_file = $_GET['use_file'] == "true" ? true : false;
 $event_fields = $_GET['event_fields'];
 $json_string = $_GET['json_string'];
 
