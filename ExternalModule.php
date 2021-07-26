@@ -10,9 +10,14 @@ class ExternalModule extends AbstractExternalModule {
 
     function collectModules() {
         // fetch module id to name mappings
-        // Can't use WHERE `key` = 'enabled' and value = 'true' because $this->framework->query throws an exception. The probable cause is that `key` is not being escaped properly (the query works using MySQL workbench)
         // Note: The results also contain disabled projects (projects disabled at the control center level and not at the project level)
-        $sql = "SELECT em.* FROM redcap_external_modules em INNER JOIN (select * from redcap_external_module_settings where value = 'true' and project_id is not null and type = 'boolean') settings ON em.external_module_id = settings.external_module_id;";
+        $sql = "SELECT DISTINCT em.* FROM redcap_external_modules em INNER JOIN
+            (SELECT * FROM redcap_external_module_settings
+                WHERE `key` = 'enabled'
+                AND value = 'true'
+                AND project_id IS NOT NULL  -- TODO: support system level config export in control center
+            ) settings
+            ON em.external_module_id = settings.external_module_id;";
         $result = $this->framework->query($sql, []);
         $module_mapping = [];
 
