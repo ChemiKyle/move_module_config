@@ -10,7 +10,7 @@ class ExternalModule extends AbstractExternalModule {
 
     function collectModules() {
         // fetch module id to name mappings
-        // Note: The results also contain disabled projects (projects disabled at the control center level and not at the project level)
+        // Note: The results also contain disabled modules (modules disabled at the control center level and not at the project level)
         $sql = "SELECT DISTINCT em.* FROM redcap_external_modules em INNER JOIN
             (SELECT * FROM redcap_external_module_settings
                 WHERE `key` = 'enabled'
