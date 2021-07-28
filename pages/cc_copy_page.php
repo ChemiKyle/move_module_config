@@ -42,7 +42,11 @@ foreach($module_mapping as $prefix => $id) {
         <option value="" disabled selected hidden>Please select an external module...</option>
     <?php
     foreach($module_mapping as $prefix => $key) {
-        echo "<option value='$key' prefix='$prefix'>" . \ExternalModules\ExternalModules::getConfig($prefix)['name'] . "</option>";
+        // Check if a configuration exists because the query results can contain disabled EM's. See comment in ExternalModule->collectModules for clarification.
+        $config = \ExternalModules\ExternalModules::getConfig($prefix)['name'];
+        if(isset($config)){
+            echo "<option value='$key' prefix='$prefix'>" . $config . "</option>";
+        }   
     }
     ?>
     </select>

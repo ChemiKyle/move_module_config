@@ -22,13 +22,6 @@
             "icon": "far fa-copy",
             "url": "pages/cc_copy_page.php"
          }
-      ],
-      "project": [
-         {
-            "name": "project copy page",
-            "icon": "bell",
-            "url": "pages/project_copy_page.php"
-         }
       ]
    }
 }
